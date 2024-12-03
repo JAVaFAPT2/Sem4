@@ -5,7 +5,6 @@ import com.example.beskbd.dto.response.ApiResponse;
 import com.example.beskbd.dto.response.CartItemDTO;
 import com.example.beskbd.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -21,70 +20,70 @@ public class RestCartController {
     public RestCartController(CartService cartService) {
         this.cartService = cartService;
     }
+
     @GetMapping("/{cartId}")
-    public ResponseEntity<ApiResponse> getBasketById(@PathVariable Long cartId) {
+    public ApiResponse<CartDTO> getBasketById(@PathVariable Long cartId) {
         CartDTO cart = cartService.loadCartById(cartId);
-        return ResponseEntity.ok(ApiResponse.builder()
+        return ApiResponse.<CartDTO>builder()
                 .success(true)
                 .data(cart)
-                .build());
+                .build();
     }
 
     @GetMapping("/{cartId}/totalPrice")
-    public ResponseEntity<ApiResponse> calculateTotalPrice(@PathVariable Long cartId) {
+    public ApiResponse<BigDecimal> calculateTotalPrice(@PathVariable Long cartId) {
         BigDecimal totalPrice = cartService.calculateTotalPrice(cartId);
-        return ResponseEntity.ok(ApiResponse.builder()
+        return ApiResponse.<BigDecimal>builder()
                 .success(true)
                 .data(totalPrice)
-                .build());
+                .build();
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse> addCart(@RequestParam String nameCart) {
+    public ApiResponse<CartItemDTO> addCart(@RequestParam String nameCart) {
         CartItemDTO newBasket = cartService.addCart(nameCart);
-        return ResponseEntity.ok(ApiResponse.builder()
+        return ApiResponse.<CartItemDTO>builder()
                 .success(true)
                 .data(newBasket)
-                .build());
+                .build();
     }
 
     @PostMapping("/{cartId}/items")
-    public ResponseEntity<ApiResponse> addItemToBasket(@PathVariable Long cartId,
-                                                       @RequestParam Long productId,
-                                                       @RequestParam int quantity) {
+    public ApiResponse<String> addItemToBasket(@PathVariable Long cartId,
+                                               @RequestParam Long productId,
+                                               @RequestParam int quantity) {
         cartService.addItemToCarts(cartId, productId, quantity);
-        return ResponseEntity.ok(ApiResponse.builder()
+        return ApiResponse.<String>builder()
                 .success(true)
                 .message("Item added to basket successfully")
-                .build());
+                .build();
     }
 
-
     @DeleteMapping("/{cartId}/items/{itemId}")
-    public ResponseEntity<ApiResponse> removeItemFromBasket(@PathVariable Long cartId)
-    {
-        cartService.removeItemFromCart(cartId);
-        return ResponseEntity.ok(ApiResponse.builder()
+    public ApiResponse<String> removeItemFromBasket(@PathVariable Long cartId,
+                                                    @PathVariable Long itemId) {
+        cartService.removeItemFromCart(cartId, itemId);
+        return ApiResponse.<String>builder()
                 .success(true)
                 .message("Item removed from basket successfully")
-                .build());
+                .build();
     }
 
     @DeleteMapping("/{cartId}")
-    public ResponseEntity<ApiResponse> deleteBasket(@PathVariable Long cartId) {
+    public ApiResponse<String> deleteBasket(@PathVariable Long cartId) {
         cartService.deleteCart(cartId);
-        return ResponseEntity.ok(ApiResponse.builder()
+        return ApiResponse.<String>builder()
                 .success(true)
                 .message("Basket deleted successfully")
-                .build());
+                .build();
     }
 
     @PutMapping("/{cartId}")
-    public ResponseEntity<ApiResponse> updateBasket(@PathVariable Long cartId, @RequestParam String nameCart) {
+    public ApiResponse<String> updateBasket(@PathVariable Long cartId, @RequestParam String nameCart) {
         cartService.updateCart(cartId, nameCart);
-        return ResponseEntity.ok(ApiResponse.builder()
+        return ApiResponse.<String>builder()
                 .success(true)
                 .message("Cart updated successfully")
-                .build());
+                .build();
     }
 }

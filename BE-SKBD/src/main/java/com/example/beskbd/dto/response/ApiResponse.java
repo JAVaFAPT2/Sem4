@@ -11,6 +11,7 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
+
 public class ApiResponse<T> {
     private T data ;
     private Integer errorCode;

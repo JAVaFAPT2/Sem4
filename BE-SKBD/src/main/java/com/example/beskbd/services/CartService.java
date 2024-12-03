@@ -116,13 +116,21 @@ public class CartService {
         cartRepository.save(cart);
     }
 
-    public void removeItemFromCart(Long cartId) {
-            // Retrieve the cart by cartId
+    public void removeItemFromCart(Long cartId, Long itemId) {
+        // Retrieve the cart by cartId
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        // Find the cart item with the specified itemId
+        CartItem itemToRemove = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
         // Remove the cart item from the cart
-        cart.getCartItems().clear();
-        // Save the cart (this will also save the CartItem if it's new)
+        cart.getCartItems().remove(itemToRemove);
+
+        // Save the cart (this will also cascade save the changes since it's a relationship)
         cartRepository.save(cart);
     }
 

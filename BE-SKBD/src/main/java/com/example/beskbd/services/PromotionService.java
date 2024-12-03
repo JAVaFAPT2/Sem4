@@ -1,5 +1,6 @@
 package com.example.beskbd.services;
 
+import com.example.beskbd.dto.ProductDTO;
 import com.example.beskbd.dto.request.PromotionCreationRequest;
 import com.example.beskbd.dto.response.PromotionDTO; // Assuming you have a PromotionDTO
 import com.example.beskbd.dto.response.PromotionProductDTO;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,8 +67,26 @@ public class PromotionService {
                 .orElseThrow(() -> new RuntimeException("Promotion not found: " + id));
         return convertToDTO(promotion);
     }
-    public List<PromotionProduct> getPromotionProducts(Long promotionId) {
-        return promotionProductRepository.findByPromotionId(promotionId);
+    public List<ProductDTO> getPromotionProducts(Long promotionId) {
+        // Fetching PromotionProducts by promotionId
+        List<PromotionProduct> promotionProducts = promotionProductRepository.findByPromotionId(promotionId);
+
+        // Mapping PromotionProduct to ProductDTO
+        return promotionProducts.stream()
+                .map(this::mapToProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Example of a mapping function
+    private ProductDTO mapToProductDTO(PromotionProduct promotionProduct) {
+        var product = promotionProduct.getProduct(); // Get the product associated with the promotion product
+        var firstAttribute = product.getAttributes().isEmpty() ? null : product.getAttributes().get(0); // Safely get the first attribute
+
+        return ProductDTO.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .price(firstAttribute != null ? firstAttribute.getPrice() : BigDecimal.ZERO) // Set default price if no attributes
+                .build();
     }
 
     private PromotionDTO convertToDTO(Promotion promotion) {

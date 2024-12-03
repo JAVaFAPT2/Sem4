@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -23,7 +22,7 @@ import java.security.Key;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("auth")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600000)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -32,52 +31,54 @@ public class RestAuthController {
     AuthenticationService authenticationService;
     UserService userService;
 
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthenticationResponse>> authenticate(@RequestBody @Valid AuthenticationRequest request) {
-        try {
-            AuthenticationResponse result = authenticationService.authenticate(request);
-
-            if (result == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.<AuthenticationResponse>builder()
-                                .errorMessage("Invalid credentials")
-                                .errorCode(401)
-                                .build());
-            }
-
-            return ResponseEntity.ok(ApiResponse.<AuthenticationResponse>builder()
-                    .data(result)
-                    .success(true)
-                    .build());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.<AuthenticationResponse>builder()
-                            .errorMessage("Authentication failed: " + e.getMessage())
-                            .errorCode(500)
-                            .build());
+    @PostMapping("login")
+    public ApiResponse<AuthenticationResponse> authenticate(@RequestBody @Valid AuthenticationRequest request) {
+        AuthenticationResponse result = authenticationService.authenticate(request);
+        if (result == null) {
+            return ApiResponse.<AuthenticationResponse>builder()
+                    .errorMessage("Invalid credentials")
+                    .errorCode(401)
+                    .success(false)
+                    .build();
         }
+        return ApiResponse.<AuthenticationResponse>builder()
+                .data(result)
+                .success(true)
+                .build();
     }
 
-    @GetMapping("/oauth2/login")
-    public ResponseEntity<String> oauth2Login() {
-        return ResponseEntity.ok("Please login using Google OAuth2.");
+    @GetMapping("oauth2/login")
+    public ApiResponse<String> oauth2Login() {
+        return ApiResponse.<String>builder()
+                .data("Please login using Google OAuth2.")
+                .success(true)
+                .build();
     }
 
-    @GetMapping("/oauth2/callback")
-    public ResponseEntity<String> oauth2Callback(@AuthenticationPrincipal OidcUser oidcUser) {
+    @GetMapping("oauth2/callback")
+    public ApiResponse<String> oauth2Callback(@AuthenticationPrincipal OidcUser oidcUser) {
         if (oidcUser == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error processing OAuth2 callback: OIDC user is null.");
+            return ApiResponse.<String>builder()
+                    .errorMessage("Error processing OAuth2 callback: OIDC user is null.")
+                    .errorCode(500)
+                    .success(false)
+                    .build();
         }
 
         String email = oidcUser.getEmail();
         if (email == null || email.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error processing OAuth2 callback: Email not found in OIDC user.");
+            return ApiResponse.<String>builder()
+                    .errorMessage("Error processing OAuth2 callback: Email not found in OIDC user.")
+                    .errorCode(400)
+                    .success(false)
+                    .build();
         }
 
         String jwt = generateJwt(email);
-        return ResponseEntity.ok("JWT: " + jwt);
+        return ApiResponse.<String>builder()
+                .data("JWT: " + jwt)
+                .success(true)
+                .build();
     }
 
     private String generateJwt(String email) {
@@ -90,38 +91,40 @@ public class RestAuthController {
                 .compact();
     }
 
-    @PostMapping("/registration")
-    public ResponseEntity<ApiResponse<AuthenticationResponse>> registerUser(@RequestBody @Valid UserCreationRequest request) {
+    @PostMapping("registration")
+    public ApiResponse<AuthenticationResponse> registerUser(@RequestBody @Valid UserCreationRequest request) {
         AuthenticationResponse result = userService.createUser(request);
-        return ResponseEntity.ok(ApiResponse.<AuthenticationResponse>builder()
+        return ApiResponse.<AuthenticationResponse>builder()
                 .data(result)
                 .success(true)
-                .build());
+                .build();
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<AuthenticationResponse>> refreshToken(@RequestBody RefreshRequest request) {
+    @PostMapping("refresh")
+    public ApiResponse<AuthenticationResponse> refreshToken(@RequestBody RefreshRequest request) {
         AuthenticationResponse result = authenticationService.refreshToken(request);
-        return ResponseEntity.ok(ApiResponse.<AuthenticationResponse>builder()
+        return ApiResponse.<AuthenticationResponse>builder()
                 .data(result)
                 .success(true)
-                .build());
+                .build();
     }
 
-    @PostMapping("/sign-out")
-    public ResponseEntity<ApiResponse<Void>> logout(@RequestBody LogoutRequest request) {
+    @PostMapping("sign-out")
+    public ApiResponse<Void> logout(@RequestBody LogoutRequest request) {
         authenticationService.logout(request);
-        return ResponseEntity.ok(ApiResponse.<Void>builder().success(true).build());
+        return ApiResponse.<Void>builder()
+                .success(true)
+                .build();
     }
 
-    @PostMapping("/forgot-password")
-    public ResponseEntity<ApiResponse<String>> forgotPassword(@RequestBody @Valid ForgotPasswordRequest requestBody,
-                                                              HttpServletRequest request) {
+    @PostMapping("forgot-password")
+    public ApiResponse<String> forgotPassword(@RequestBody @Valid ForgotPasswordRequest requestBody,
+                                              HttpServletRequest request) {
         userService.forgotPassword(requestBody.getEmail(), request);
-        return ResponseEntity.ok(ApiResponse.<String>builder()
+        return ApiResponse.<String>builder()
                 .data("Password reset link sent successfully.")
                 .success(true)
-                .build());
+                .build();
     }
 
 }

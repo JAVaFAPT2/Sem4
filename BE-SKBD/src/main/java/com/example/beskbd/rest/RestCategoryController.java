@@ -2,48 +2,54 @@ package com.example.beskbd.rest;
 
 import com.example.beskbd.dto.request.CategoryCreationRequest;
 import com.example.beskbd.dto.response.ApiResponse;
+import com.example.beskbd.dto.response.CategoryResponse; // Assuming you have a CategoryResponse
 import com.example.beskbd.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/categories")
-@CrossOrigin(origins = "*", maxAge = 360000)
 @RequiredArgsConstructor
+@RequestMapping("/categories")
 public class RestCategoryController {
-            @Autowired
-    public final CategoryService categoryService; // Use constructor-based injection
 
+    private final CategoryService categoryService;
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryCreationRequest request) {
-        categoryService.createNewCategory(request);
-        return ResponseEntity.ok(ApiResponse.builder()
-                .success(true)
-                .build());
+    @PostMapping
+    public ApiResponse<CategoryResponse> createCategory(@Valid @RequestBody CategoryCreationRequest request) {
+        // Adjusted to get result from service
+        CategoryResponse categoryResponse = categoryService.createNewCategory(request);
+        return ApiResponse.<CategoryResponse>builder()
+                .data(categoryResponse)
+                .success(true) // Indicating success
+                .build();
     }
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllCategories() {
-        return ResponseEntity.ok(ApiResponse.builder()
+
+    @GetMapping
+    public ApiResponse<List<CategoryResponse>> getAllCategories() {
+        List<CategoryResponse> categories = categoryService.getAllCategories();
+        return ApiResponse.<List<CategoryResponse>>builder()
                 .success(true)
-                .data(categoryService.getAllCategories())
-                .build());
+                .data(categories)
+                .build();
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCategoryById(@PathVariable Long id) {
-        return ResponseEntity.ok(ApiResponse.builder()
-                .success(true)
+    public ApiResponse<CategoryResponse> getCategoryById(@PathVariable Long id) {
+        return ApiResponse.<CategoryResponse>builder()
                 .data(categoryService.getCategoryById(id))
-                .build());
+                .success(true) // Indicating success
+                .build();
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCategoryById(@PathVariable Long id) {
+    public ApiResponse<Void> deleteCategoryById(@PathVariable Long id) {
         categoryService.deleteCategoryById(id);
-        return ResponseEntity.ok(ApiResponse.builder()
-                .success(true)
-                .build());
+        return ApiResponse.<Void>builder()
+                .data(null) // No content to return
+                .success(true) // Indicating successful deletion
+                .build();
     }
 }

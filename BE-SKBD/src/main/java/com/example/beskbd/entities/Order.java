@@ -32,9 +32,10 @@ public class Order extends BaseEntity {
     @Column(name = "shipping_address", columnDefinition = "TEXT")
     private String shippingAddress;
 
+    // Make sure to use List<OrderItem> here
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private List<OrderItems> orderItems;
+    @JoinColumn(name = "order_id") // This means OrderItem will have a foreign key to Order
+    private List<OrderItem> orderItems;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;

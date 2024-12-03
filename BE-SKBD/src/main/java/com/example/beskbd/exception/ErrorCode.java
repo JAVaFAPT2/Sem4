@@ -20,7 +20,10 @@ public enum ErrorCode {
     INVALID_REQUEST(1012, "Invalid request", HttpStatus.BAD_REQUEST),
     INVALID_CREDENTIALS(1013, "Expired or Invalid Token", HttpStatus.UNAUTHORIZED),
     EMAIL_NOT_EXISTS(1014, "Email not found", HttpStatus.NOT_FOUND),
-    EMAIL_ALREADY_EXISTS(1015,"Email have been here" ,HttpStatus.NOT_ACCEPTABLE );
+    EMAIL_ALREADY_EXISTS(1015,"Email have been here" ,HttpStatus.NOT_ACCEPTABLE ),
+    UPLOAD_FAILED(1016,"img fail" ,HttpStatus.NOT_ACCEPTABLE ),
+    PRODUCT_NOT_FOUND(1017,"NotFound" ,HttpStatus.NOT_FOUND ),
+    CATEGORY_NOT_FOUND(1018,"NotFound" ,HttpStatus.NOT_FOUND );
 
 
     private final int code;
