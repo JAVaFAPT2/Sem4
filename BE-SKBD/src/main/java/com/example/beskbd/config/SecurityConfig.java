@@ -75,7 +75,8 @@ public class SecurityConfig  {
             "/api/auth/refresh-token",
             "/api/auth/verify-email",
             "/api/auth/resend-verification-email",
-            "/reset-password"
+            "/reset-password",
+            "/api/products/create"
 
     };
     @Autowired

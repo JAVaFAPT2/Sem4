@@ -57,6 +57,7 @@ public class ProductService {
         product.setName(request.getProductName());
         product.setDescription(request.getProductDescription());
 
+
         // Fetch category
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
