@@ -23,14 +23,11 @@ public class ProductAttributeDto {
     @NotNull
     @Digits(integer = 10, fraction = 2)
     private BigDecimal price;
+
+    // Ensure the imageFiles list is validated to not be empty
     @NotEmpty
     private List<MultipartFile> imageFiles;
     @NotEmpty
     private List<ProductSizeDto> sizes;
 
-
-    public ProductAttributeDto(String color, BigDecimal price) {
-        this.color = color;
-        this.price = price;
-    }
 }

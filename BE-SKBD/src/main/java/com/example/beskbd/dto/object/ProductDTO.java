@@ -1,4 +1,4 @@
-package com.example.beskbd.dto;
+package com.example.beskbd.dto.object;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

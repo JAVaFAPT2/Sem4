@@ -1,9 +1,8 @@
-package com.example.beskbd.dto.request;
+package com.example.beskbd.dto.object;
 
 
 
 
-import com.example.beskbd.dto.response.CartItemDTO;
 import com.example.beskbd.entities.User;
 import lombok.*;
 

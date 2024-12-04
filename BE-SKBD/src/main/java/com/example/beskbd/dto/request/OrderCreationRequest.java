@@ -1,7 +1,6 @@
 package com.example.beskbd.dto.request;
 
 import com.example.beskbd.dto.object.OrderAttributeDto;
-import com.example.beskbd.dto.object.ProductAttributeDto;
 import com.example.beskbd.dto.response.CreateOrderResponse;
 import com.example.beskbd.entities.User;
 import lombok.Data;

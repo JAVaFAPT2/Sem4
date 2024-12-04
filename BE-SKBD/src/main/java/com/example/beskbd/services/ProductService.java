@@ -11,14 +11,15 @@ import com.example.beskbd.exception.AppException;
 import com.example.beskbd.exception.ErrorCode;
 import com.example.beskbd.repositories.CategoryRepository;
 import com.example.beskbd.repositories.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -41,15 +42,14 @@ public class ProductService {
                         Collectors.mapping(CategoryDto::new, Collectors.toList())));
     }
 
-    @Transactional
     public ProductDto addProduct(ProductCreationRequest request) {
-        validateProductCreationRequest(request); // Validate request
+        validateProductCreationRequest(request);  // Check request validity
         logger.info("Adding new product: {}", request);
 
-        // Convert ProductCreationRequest to Product
+        // Convert ProductCreationRequest to Product entity
         Product product = toProductEntity(request);
         Product savedProduct = productRepository.save(product);
-        return toProductDto(savedProduct);
+        return toProductDto(savedProduct);  // Return the DTO of the saved product
     }
 
     private Product toProductEntity(ProductCreationRequest request) {
@@ -57,8 +57,7 @@ public class ProductService {
         product.setName(request.getProductName());
         product.setDescription(request.getProductDescription());
 
-
-        // Fetch category
+        // Fetch category using the categoryId
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
@@ -69,11 +68,12 @@ public class ProductService {
                 .stream()
                 .map(this::toProductAttribute)
                 .collect(Collectors.toList());
-        product.setAttributes(attributes);
+        product.setAttributes(attributes);  // Set attributes for the product
 
         return product;
     }
 
+    // Convert a Product to its DTO representation
     public ProductDto toProductDto(Product product) {
         return ProductDto.builder()
                 .productId(product.getId())
@@ -91,33 +91,32 @@ public class ProductService {
     private ProductAttribute toProductAttribute(ProductAttributeDto dto) {
         ProductAttribute productAttribute = new ProductAttribute();
         productAttribute.setColor(dto.getColor());
-        List<ProductImage> productImages = uploadProductImages(dto);
-        productAttribute.setProductImages(productImages);
-        productAttribute.setSizes(dto.getSizes()
+
+        // Ensure sizes is not null
+        List<ProductSize> sizes = (dto.getSizes() == null) ? Collections.emptyList() : dto.getSizes()
                 .stream()
                 .map(this::toProductSize)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+        productAttribute.setSizes(sizes);
+
+        // Upload product images
+        List<ProductImage> productImages = uploadProductImages(dto);
+        productAttribute.setProductImages(productImages);
         productAttribute.setPrice(dto.getPrice());
 
         return productAttribute;
     }
 
+
     private List<ProductImage> uploadProductImages(ProductAttributeDto dto) {
-        return dto.getImageFiles()
-                .stream()
+        return dto.getImageFiles().stream()
                 .map(imageFile -> {
-                    try {
-                        String url = cloudinaryService.uploadImage(imageFile);
-                        ProductImage productImage = new ProductImage();
-                        productImage.setImageUrl(url);
-                        return productImage;
-                    } catch (IOException e) {
-                        logger.error("Failed to upload image");
-                        throw new AppException(ErrorCode.UPLOAD_FAILED);
-                    }
+                    String url = cloudinaryService.uploadImage(imageFile);
+                    return new ProductImage(url); // Create ProductImage using the URL
                 })
                 .collect(Collectors.toList());
     }
+
 
     private ProductSize toProductSize(ProductSizeDto productSizeDto) {
         return ProductSize.builder()
@@ -147,9 +146,7 @@ public class ProductService {
     private String getFirstImageUrl(Product product) {
         return product.getAttributes().stream()
                 .findFirst()
-                .flatMap(attr -> attr.getProductImages()
-                        .stream()
-                        .findFirst())
+                .flatMap(attr -> attr.getProductImages().stream().findFirst())
                 .map(ProductImage::getImageUrl)
                 .orElse(""); // Default to an empty string if no image is available
     }
@@ -209,7 +206,7 @@ public class ProductService {
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         product.setCategory(category);
 
-        // Map the attributes from the request to ProductAttribute entities
+        // Update existing attributes or replace them as needed
         List<ProductAttribute> attributes = request.getAttributes()
                 .stream()
                 .map(this::toProductAttribute)
@@ -224,6 +221,9 @@ public class ProductService {
         if (request.getProductName() == null || request.getProductName().isEmpty()) {
             throw new AppException(ErrorCode.INVALID_REQUEST);
         }
-        // Add other validation logic as necessary
+        if (request.getCategoryId() == null) {
+            throw new AppException(ErrorCode.INVALID_REQUEST);
+        }
+        // More validation checks can be added as needed
     }
 }

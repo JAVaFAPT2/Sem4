@@ -1,15 +1,14 @@
 package com.example.beskbd.rest;
 
-import com.example.beskbd.dto.ProductDTO;
+import com.example.beskbd.dto.object.ProductDTO;
 import com.example.beskbd.dto.request.PromotionCreationRequest;
 import com.example.beskbd.dto.response.ApiResponse;
-import com.example.beskbd.dto.response.PromotionDTO;
+import com.example.beskbd.dto.object.PromotionDTO;
 import com.example.beskbd.services.PromotionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController

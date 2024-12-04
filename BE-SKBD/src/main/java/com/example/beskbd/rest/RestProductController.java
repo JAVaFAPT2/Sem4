@@ -5,7 +5,6 @@ import com.example.beskbd.dto.object.NewArrivalProductDto;
 import com.example.beskbd.dto.request.ProductCreationRequest;
 import com.example.beskbd.dto.response.ApiResponse;
 import com.example.beskbd.dto.response.ProductDto;
-import com.example.beskbd.entities.Product;
 import com.example.beskbd.exception.AppException;
 import com.example.beskbd.exception.ErrorCode;
 import com.example.beskbd.services.ProductService;
@@ -44,15 +43,19 @@ public class RestProductController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<Void> createProduct(@ModelAttribute ProductCreationRequest request) {
+    public ApiResponse<ProductDto> createProduct(@ModelAttribute ProductCreationRequest request) {
         if (request == null) {
             logger.error("Product creation request is null");
             throw new AppException(ErrorCode.INVALID_REQUEST);
         }
         logger.info("Creating product: {}", request);
-        productService.addProduct(request);
-        return ApiResponse.<Void>builder()
+
+        // Ensure to handle product creation properly in service layer
+        ProductDto createdProduct = productService.addProduct(request);
+
+        return ApiResponse.<ProductDto>builder()
                 .success(true)
+                .data(createdProduct)  // Returning the created product DTO
                 .build();
     }
 
@@ -96,10 +99,10 @@ public class RestProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ApiResponse<Void> updateProduct(@PathVariable Long id, @RequestBody ProductCreationRequest request) {
+    public ApiResponse<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductCreationRequest request) {
         logger.info("Updating product ID: {} with request: {}", id, request);
         productService.updateProduct(id, request);
-        return ApiResponse.<Void>builder()
+        return ApiResponse.<ProductDto>builder()
                 .success(true)
                 .build();
     }

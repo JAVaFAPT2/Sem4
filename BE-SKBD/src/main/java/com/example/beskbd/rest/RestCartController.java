@@ -1,8 +1,8 @@
 package com.example.beskbd.rest;
 
-import com.example.beskbd.dto.request.CartDTO;
+import com.example.beskbd.dto.object.CartDTO;
 import com.example.beskbd.dto.response.ApiResponse;
-import com.example.beskbd.dto.response.CartItemDTO;
+import com.example.beskbd.dto.object.CartItemDTO;
 import com.example.beskbd.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

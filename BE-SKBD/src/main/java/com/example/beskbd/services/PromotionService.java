@@ -1,8 +1,8 @@
 package com.example.beskbd.services;
 
-import com.example.beskbd.dto.ProductDTO;
+import com.example.beskbd.dto.object.ProductDTO;
 import com.example.beskbd.dto.request.PromotionCreationRequest;
-import com.example.beskbd.dto.response.PromotionDTO; // Assuming you have a PromotionDTO
+import com.example.beskbd.dto.object.PromotionDTO; // Assuming you have a PromotionDTO
 import com.example.beskbd.dto.response.PromotionProductDTO;
 import com.example.beskbd.entities.Promotion;
 import com.example.beskbd.entities.PromotionProduct;

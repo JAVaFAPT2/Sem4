@@ -1,4 +1,4 @@
-package com.example.beskbd.dto.response;
+package com.example.beskbd.dto.object;
 
 
 import lombok.Getter;

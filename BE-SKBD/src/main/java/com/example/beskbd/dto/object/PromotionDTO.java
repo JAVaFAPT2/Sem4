@@ -1,5 +1,6 @@
-package com.example.beskbd.dto.response;
+package com.example.beskbd.dto.object;
 
+import com.example.beskbd.dto.response.PromotionProductDTO;
 import lombok.*;
 
 import java.time.LocalDateTime;

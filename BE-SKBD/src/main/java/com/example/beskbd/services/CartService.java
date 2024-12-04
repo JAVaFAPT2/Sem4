@@ -1,15 +1,13 @@
 package com.example.beskbd.services;
 
-import com.example.beskbd.dto.request.CartDTO;
-import com.example.beskbd.dto.response.CartItemDTO;
+import com.example.beskbd.dto.object.CartDTO;
+import com.example.beskbd.dto.object.CartItemDTO;
 import com.example.beskbd.entities.Cart;
 import com.example.beskbd.entities.CartItem;
-import com.example.beskbd.entities.Product;
 import com.example.beskbd.entities.ProductAttribute;
 import com.example.beskbd.repositories.CartItemRepository;
 import com.example.beskbd.repositories.CartRepository;
 import com.example.beskbd.repositories.ProductAttributeRepository;
-import com.example.beskbd.repositories.ProductRepository; // Ensure you have this
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

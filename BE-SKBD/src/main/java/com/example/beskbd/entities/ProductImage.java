@@ -14,11 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Table(name = "tbl_product_images")
 public class ProductImage extends BaseEntity {
+
     @Column(name = "image_url")
-    private String imageUrl;
-
-    public ProductImage(MultipartFile multipartFile) {
-            this.imageUrl = multipartFile.getOriginalFilename();
-
-    }
+    private String imageUrl; // Store the URL of the image
 }
