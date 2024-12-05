@@ -12,12 +12,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orders")
+@RequestMapping("/api/orders")
 public class RestOrderController {
 
     private final OrderService orderService;
 
-    @PostMapping
+    @PostMapping("create")
     public ApiResponse<OrderResponse> createOrder(@Valid @RequestBody OrderCreationRequest request) {
         OrderResponse orderResponse = orderService.createNewOrder(request);
         return ApiResponse.<OrderResponse>builder()

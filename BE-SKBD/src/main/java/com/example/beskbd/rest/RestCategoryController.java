@@ -12,12 +12,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/categories")
+@RequestMapping("/api/categories")
 public class RestCategoryController {
 
     private final CategoryService categoryService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ApiResponse<CategoryResponse> createCategory(@Valid @RequestBody CategoryCreationRequest request) {
         // Adjusted to get result from service
         CategoryResponse categoryResponse = categoryService.createNewCategory(request);

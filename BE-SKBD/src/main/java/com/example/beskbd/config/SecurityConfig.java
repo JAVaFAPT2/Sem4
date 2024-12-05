@@ -56,27 +56,26 @@ public class SecurityConfig  {
     private String  secretKey;
     private SecretKey key;
     private static final String[] WHITE_LIST_URL = {
-            "/auth/registration",
-            "/auth/login",
-            "/auth/token",
-            "/api/test",
-            "/api/getTest",
+            "/api/auth/registration",
+            "/api/auth/login",
+            "/api/auth/token",
             "/api/paypal/pay",
             "/error",
             "/api/categories",
             "/api/products/",
             "/api/products/gender",
             "/api/products/by-gender",
-            "/auth/oauth2/login",
-            "/auth/oauth2/callback",
-            "/auth/forgot-password",
-            "/auth/reset-password",
-            "/auth/logout",
+            "/api/auth/oauth2/login",
+            "/api/auth/oauth2/callback",
+            "/api/auth/forgot-password",
+            "/api/auth/reset-password",
+            "/api/auth/logout",
             "/api/auth/refresh-token",
             "/api/auth/verify-email",
             "/api/auth/resend-verification-email",
-            "/reset-password",
-            "/api/products/create"
+            "/api/reset-password",
+            "/api/products/create",
+            "/api/products/"
 
     };
     @Autowired

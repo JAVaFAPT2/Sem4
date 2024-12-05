@@ -22,7 +22,7 @@ import java.security.Key;
 import java.util.Date;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600000)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -31,7 +31,7 @@ public class RestAuthController {
     AuthenticationService authenticationService;
     UserService userService;
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ApiResponse<AuthenticationResponse> authenticate(@RequestBody @Valid AuthenticationRequest request) {
         AuthenticationResponse result = authenticationService.authenticate(request);
         if (result == null) {
@@ -126,5 +126,15 @@ public class RestAuthController {
                 .success(true)
                 .build();
     }
+    @PostMapping("resend-verification")
+    public ApiResponse<String> resendVerification(@RequestBody @Valid ResendVerificationRequest requestBody,
+                                                  HttpServletRequest request) {
+        userService.resendVerification(requestBody.getEmail(), request);
+        return ApiResponse.<String>builder()
+                .data("Verification email sent successfully.")
+                .success(true)
+                .build();
+    }
+
 
 }

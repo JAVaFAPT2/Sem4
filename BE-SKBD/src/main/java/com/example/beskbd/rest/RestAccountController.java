@@ -1,5 +1,6 @@
 package com.example.beskbd.rest;
 
+import com.example.beskbd.dto.response.AccountResponse;
 import com.example.beskbd.dto.response.ApiResponse;
 import com.example.beskbd.services.AccountService;
 import lombok.AccessLevel;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/api/account")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 360000)
 @FieldDefaults(level = AccessLevel.PUBLIC, makeFinal = true)
@@ -22,9 +23,9 @@ public class RestAccountController {
     AccountService accountService;
 
     @GetMapping()
-    public ApiResponse<?> getDetails() {
+    public ApiResponse<AccountResponse> getDetails() {
         logger.info("Account details request");
-        return ApiResponse.builder()
+        return ApiResponse.<AccountResponse>builder()
                 .data(accountService.getAccountDetails())
                 .success(true)
                 .build();
