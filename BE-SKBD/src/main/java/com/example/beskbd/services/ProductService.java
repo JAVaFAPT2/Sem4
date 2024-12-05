@@ -1,9 +1,6 @@
 package com.example.beskbd.services;
 
-import com.example.beskbd.dto.object.CategoryDto;
-import com.example.beskbd.dto.object.NewArrivalProductDto;
-import com.example.beskbd.dto.object.ProductAttributeDto;
-import com.example.beskbd.dto.object.ProductSizeDto;
+import com.example.beskbd.dto.object.*;
 import com.example.beskbd.dto.request.ProductCreationRequest;
 import com.example.beskbd.dto.response.ProductDto;
 import com.example.beskbd.entities.*;
@@ -16,13 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,13 +37,13 @@ public class ProductService {
     }
 
     public ProductDto addProduct(ProductCreationRequest request) {
-        validateProductCreationRequest(request);  // Check request validity
+        validateProductCreationRequest(request);
         logger.info("Adding new product: {}", request);
 
         // Convert ProductCreationRequest to Product entity
         Product product = toProductEntity(request);
         Product savedProduct = productRepository.save(product);
-        return toProductDto(savedProduct);  // Return the DTO of the saved product
+        return toProductDto(savedProduct);
     }
 
     private Product toProductEntity(ProductCreationRequest request) {
@@ -57,7 +51,7 @@ public class ProductService {
         product.setName(request.getProductName());
         product.setDescription(request.getProductDescription());
 
-        // Fetch category using the categoryId
+        // Fetch category using categoryId
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
@@ -68,12 +62,11 @@ public class ProductService {
                 .stream()
                 .map(this::toProductAttribute)
                 .collect(Collectors.toList());
-        product.setAttributes(attributes);  // Set attributes for the product
+        product.setAttributes(attributes);
 
         return product;
     }
 
-    // Convert a Product to its DTO representation
     public ProductDto toProductDto(Product product) {
         return ProductDto.builder()
                 .productId(product.getId())
@@ -93,30 +86,28 @@ public class ProductService {
         productAttribute.setColor(dto.getColor());
 
         // Ensure sizes is not null
-        List<ProductSize> sizes = (dto.getSizes() == null) ? Collections.emptyList() : dto.getSizes()
+        List<ProductSize> sizes = Optional.ofNullable(dto.getSizes()).orElse(Collections.emptyList())
                 .stream()
                 .map(this::toProductSize)
                 .collect(Collectors.toList());
         productAttribute.setSizes(sizes);
 
         // Upload product images
-        List<ProductImage> productImages = uploadProductImages(dto);
+        List<ProductImage> productImages = uploadProductImages(dto.getImageFiles());
         productAttribute.setProductImages(productImages);
         productAttribute.setPrice(dto.getPrice());
 
         return productAttribute;
     }
 
-
-    private List<ProductImage> uploadProductImages(ProductAttributeDto dto) {
-        return dto.getImageFiles().stream()
+    private List<ProductImage> uploadProductImages(List<MultipartFile> imageFiles) {
+        return imageFiles == null ? Collections.emptyList() : imageFiles.stream()
                 .map(imageFile -> {
                     String url = cloudinaryService.uploadImage(imageFile);
-                    return new ProductImage(url); // Create ProductImage using the URL
+                    return new ProductImage(url);
                 })
                 .collect(Collectors.toList());
     }
-
 
     private ProductSize toProductSize(ProductSizeDto productSizeDto) {
         return ProductSize.builder()
@@ -145,10 +136,10 @@ public class ProductService {
 
     private String getFirstImageUrl(Product product) {
         return product.getAttributes().stream()
-                .findFirst()
-                .flatMap(attr -> attr.getProductImages().stream().findFirst())
+                .flatMap(attr -> attr.getProductImages().stream())
                 .map(ProductImage::getImageUrl)
-                .orElse(""); // Default to an empty string if no image is available
+                .findFirst()
+                .orElse("");
     }
 
     private BigDecimal getMaxPrice(Product product) {
@@ -188,12 +179,14 @@ public class ProductService {
         logger.info("Fetching product by ID: {}", id);
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-        return toProductDto(product); // Convert Product to ProductDto before returning
+        return toProductDto(product);
     }
 
     @Transactional
-    public void updateProduct(Long id, ProductCreationRequest request) {
+    public ProductDto updateProduct(Long id, ProductCreationRequest request) {
         logger.info("Updating product ID: {} with request: {}", id, request);
+
+        // Find the existing product by ID
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
@@ -214,16 +207,46 @@ public class ProductService {
         product.setAttributes(attributes);
 
         // Save the updated product back to the repository
-        productRepository.save(product);
+        Product updatedProduct = productRepository.save(product);
+
+        // Convert to ProductDto before returning
+        return toProductDto(updatedProduct);
     }
 
+    private ProductSizeDto toProductSizeDto(ProductSize productSize) {
+        ProductSizeDto dto = new ProductSizeDto();
+        dto.setSize(productSize.getSize());
+        dto.setStock(productSize.getStock()); // Assuming there's a stock field
+        return dto;
+    }
+
+//    private ProductAttributeDto toProductAttributeDTO(ProductAttribute productAttribute) {
+//        ProductAttributeDto dto = new ProductAttributeDto();
+//        dto.setColor(productAttribute.getColor());
+//
+//        // Map sizes correctly
+//        dto.setSizes(productAttribute.getSizes().stream()
+//                .map(this::toProductSizeDto)
+//                .collect(Collectors.toList()));
+//
+//        // Convert product images to List<String> instead of List<MultipartFile>
+//        dto.setImageFiles(productAttribute.getProductImages()
+//                .stream()
+//                .map(ProductImage::getImageUrl)
+//                .collect(Collectors.toList()));
+//
+//        dto.setPrice(productAttribute.getPrice());
+//
+//        return dto;
+//    }
+
     private void validateProductCreationRequest(ProductCreationRequest request) {
-        if (request.getProductName() == null || request.getProductName().isEmpty()) {
+        if (request.getProductName() == null || request.getProductName().trim().isEmpty()) {
             throw new AppException(ErrorCode.INVALID_REQUEST);
         }
         if (request.getCategoryId() == null) {
             throw new AppException(ErrorCode.INVALID_REQUEST);
         }
-        // More validation checks can be added as needed
+        // Additional validation checks can be added as needed
     }
 }

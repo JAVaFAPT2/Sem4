@@ -37,6 +37,7 @@ public class User extends BaseEntity implements UserDetails {
     private boolean accountNonExpired;
     private boolean isEnabled;
     private boolean accountNonLocked;
+    private boolean isDeleted = false;
     private boolean credentialsNonExpired;
     private String imageUrl;
 

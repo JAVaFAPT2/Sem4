@@ -24,7 +24,6 @@ public class ProductAttributeDto {
     @Digits(integer = 10, fraction = 2)
     private BigDecimal price;
 
-    // Ensure the imageFiles list is validated to not be empty
     @NotEmpty
     private List<MultipartFile> imageFiles;
     @NotEmpty

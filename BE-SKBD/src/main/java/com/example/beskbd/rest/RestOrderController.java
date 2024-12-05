@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/orders")
+@CrossOrigin(origins = "*", maxAge = 360000)
 public class RestOrderController {
 
     private final OrderService orderService;

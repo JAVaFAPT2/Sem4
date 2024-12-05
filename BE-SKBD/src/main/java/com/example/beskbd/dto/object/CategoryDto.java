@@ -19,6 +19,8 @@ public class CategoryDto {
     Category.Gender gender;
     @JsonProperty
     String productType;
+    @JsonProperty
+    String CategoryDescription;
 
     public CategoryDto(Category category) {
         if (category != null) {
@@ -27,5 +29,6 @@ public class CategoryDto {
             this.productType = category.getProductType();
         }
     }
+
 
 }

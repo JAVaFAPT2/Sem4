@@ -23,7 +23,9 @@ public enum ErrorCode {
     EMAIL_ALREADY_EXISTS(1015,"Email have been here" ,HttpStatus.NOT_ACCEPTABLE ),
     UPLOAD_FAILED(1016,"img fail" ,HttpStatus.NOT_ACCEPTABLE ),
     PRODUCT_NOT_FOUND(1017,"NotFound" ,HttpStatus.NOT_FOUND ),
-    CATEGORY_NOT_FOUND(1018,"NotFound" ,HttpStatus.NOT_FOUND );
+    CATEGORY_NOT_FOUND(1018,"NotFound" ,HttpStatus.NOT_FOUND ),
+    USERNAME_ALREADY_EXISTS(1019,"UserNameTaken" ,HttpStatus.CONFLICT),
+    PHONE_ALREADY_EXISTS(1020,"PhoneTaken" ,HttpStatus.CONFLICT);
 
 
     private final int code;

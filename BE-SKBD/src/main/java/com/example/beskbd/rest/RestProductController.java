@@ -24,7 +24,7 @@ import java.util.Map;
 @RequestMapping("/api/products")
 @FieldDefaults(level = AccessLevel.PUBLIC, makeFinal = true)
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 360000)
 public class RestProductController {
 
 

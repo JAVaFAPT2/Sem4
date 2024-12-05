@@ -1,5 +1,6 @@
 package com.example.beskbd.services;
 
+import com.example.beskbd.dto.object.UserDTO;
 import com.example.beskbd.dto.request.UserCreationRequest;
 import com.example.beskbd.dto.response.AuthenticationResponse;
 import com.example.beskbd.entities.Role;
@@ -9,6 +10,7 @@ import com.example.beskbd.exception.ErrorCode;
 import com.example.beskbd.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -27,6 +29,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -97,8 +100,21 @@ public class UserService implements UserDetailsService {
         emailService.sendResetLink(email, "Password Reset Request",
                 "Click the link (valid for 1 hour) to reset your password: " + resetUrl);
     }
-    public void getAllUsers() {
-        userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+    private UserDTO convertToDTO(User user) {
+        return UserDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phone(user.getPhone())
+                .role(user.getAuthority().name()) // Assuming User has a method getAuthority() returning a role
+                .build();
     }
 
     public void resendVerification(String email, HttpServletRequest request) {
@@ -139,5 +155,17 @@ public class UserService implements UserDetailsService {
                 .expiration(new Date(System.currentTimeMillis() + expirationTime)) // Set expiration date
                 .signWith(key) // Sign the token with the key
                 .compact();
+    }
+
+    public void deleteUserById(Long userId) {
+        logger.info("Soft deleting user with ID: {}", userId);
+
+        // Check if user exists
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new EntityNotFoundException("User not found with ID: " + userId));
+
+        // Set the isDeleted flag to true
+        user.setDeleted(true);
+        userRepository.save(user); // Save the updated user back to the database
     }
 }
