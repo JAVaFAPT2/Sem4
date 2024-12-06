@@ -10,6 +10,8 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductDto {
     Long productId;
     String productName;

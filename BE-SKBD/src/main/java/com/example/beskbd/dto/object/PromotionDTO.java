@@ -10,6 +10,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class PromotionDTO {
     private Long id;
     private String description;

@@ -11,6 +11,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PUBLIC)
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductFilterDto {
     BigDecimal minPrice;
     BigDecimal maxPrice;

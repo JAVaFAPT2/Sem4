@@ -1,12 +1,15 @@
 package com.example.beskbd.dto.response;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Data
 @Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderItems {
     private Long productId; // ID of the product
     private String productName; // Name of the product

@@ -10,6 +10,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PUBLIC)
+@Getter
+@Setter
 public class CategoryDto {
     @JsonProperty
     Long id;

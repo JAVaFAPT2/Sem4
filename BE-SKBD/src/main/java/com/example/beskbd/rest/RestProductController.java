@@ -15,10 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
+import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasRole;
 
 @RestController
 @RequestMapping("/api/products")
@@ -43,6 +46,7 @@ public class RestProductController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ApiResponse<ProductDto> createProduct(@ModelAttribute ProductCreationRequest request) {
         if (request == null) {
             logger.error("Product creation request is null");
@@ -90,6 +94,7 @@ public class RestProductController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ApiResponse<Void> deleteProductById(@PathVariable Long id) {
         logger.info("Deleting product by ID: {}", id);
         productService.deleteProductById(id);
@@ -99,6 +104,7 @@ public class RestProductController {
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ApiResponse<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductCreationRequest request) {
         logger.info("Updating product ID: {} with request: {}", id, request);
         productService.updateProduct(id, request);

@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PUBLIC, makeFinal = true)
+@AllArgsConstructor
 @Getter
 @Setter
 public class NewArrivalProductDto {

@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PUBLIC)
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductOrderRequest {
     Long productAttributeId;
     String color;

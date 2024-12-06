@@ -6,6 +6,7 @@ import com.example.beskbd.dto.response.CategoryResponse; // Assuming you have a 
 import com.example.beskbd.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class RestCategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ApiResponse<CategoryResponse> createCategory(@Valid @RequestBody CategoryCreationRequest request) {
         // Adjusted to get result from service
         CategoryResponse categoryResponse = categoryService.createNewCategory(request);

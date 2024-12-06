@@ -1,14 +1,13 @@
 package com.example.beskbd.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class PromotionProductDTO {
     private Long id;
     private Long productId; // Assuming you have a ProductDTO or similar

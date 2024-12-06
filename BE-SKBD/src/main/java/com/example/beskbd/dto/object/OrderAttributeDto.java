@@ -1,14 +1,17 @@
 package com.example.beskbd.dto.object;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
 public class OrderAttributeDto {
     @NotBlank
     private Long orderId;

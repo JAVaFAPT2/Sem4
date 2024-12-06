@@ -7,6 +7,7 @@ import com.example.beskbd.dto.object.PromotionDTO;
 import com.example.beskbd.services.PromotionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class RestPromotionController {
     private final PromotionService promotionService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ApiResponse<PromotionDTO> createPromotion(@Valid @RequestBody PromotionCreationRequest request) {
         // Validation logic for date range
         if (request.getStartDate().isAfter(request.getEndDate())) {

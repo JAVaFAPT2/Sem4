@@ -30,6 +30,7 @@ public class AuthenticationService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         boolean isAuthenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        user.getAuthorities().forEach(System.out::println);
         if (!isAuthenticated) throw new AppException(ErrorCode.UNAUTHENTICATED);
 
         var token = jwtService.generateToken(user);
