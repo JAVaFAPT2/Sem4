@@ -2,7 +2,7 @@ USE shopapp;
 
 SET SQL_SAFE_UPDATES = 0;
 
-    
+
 CREATE TABLE users(
     id INT PRIMARY KEY AUTO_INCREMENT,
     fullname VARCHAR(100) DEFAULT '',

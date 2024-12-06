@@ -50,10 +50,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         return;
       }
       final String token = authHeader.substring(7);
-      final String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
-      if (phoneNumber != null
+      final String userName = jwtTokenUtil.extractUserName(token);
+      if (userName != null
           && SecurityContextHolder.getContext().getAuthentication() == null) {
-        User userDetails = (User) userDetailsService.loadUserByUsername(phoneNumber);
+        User userDetails = (User) userDetailsService.loadUserByUsername(userName);
         if (jwtTokenUtil.validateToken(token, userDetails)) {
           UsernamePasswordAuthenticationToken authenticationToken =
               new UsernamePasswordAuthenticationToken(

@@ -38,12 +38,12 @@ public class JwtTokenUtils {
     //properties => claims
     Map<String, Object> claims = new HashMap<>();
     //this.generateSecretKey();
-    claims.put("phoneNumber", user.getPhoneNumber());
+    claims.put("userrName", user.getUsername());
     claims.put("userId", user.getId());
     try {
       String token = Jwts.builder()
           .setClaims(claims) //how to extract claims from this ?
-          .setSubject(user.getPhoneNumber())
+          .setSubject(user.getUsername())
           .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
           .signWith(getSignInKey(), SignatureAlgorithm.HS256)
           .compact();
@@ -88,13 +88,13 @@ public class JwtTokenUtils {
     return expirationDate.before(new Date());
   }
 
-  public String extractPhoneNumber(String token) {
+  public String extractUserName(String token) {
     return extractClaim(token, Claims::getSubject);
   }
 
   public boolean validateToken(String token, User userDetails) {
     try {
-      String phoneNumber = extractPhoneNumber(token);
+      String userName = extractUserName(token);
       Token existingToken = tokenRepository.findByToken(token);
       if (existingToken == null ||
           existingToken.isRevoked() ||
@@ -102,7 +102,7 @@ public class JwtTokenUtils {
       ) {
         return false;
       }
-      return (phoneNumber.equals(userDetails.getUsername()))
+      return (userName.equals(userDetails.getUsername()))
           && !isTokenExpired(token);
     } catch (MalformedJwtException e) {
       logger.error("Invalid JWT token: {}", e.getMessage());

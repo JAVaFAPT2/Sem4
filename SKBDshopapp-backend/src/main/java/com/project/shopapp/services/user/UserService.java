@@ -88,14 +88,14 @@ public class UserService implements IUserService {
   ) throws Exception {
     Optional<User> optionalUser = userRepository.findByUsername(userName);
     if (optionalUser.isEmpty()) {
-      throw new DataNotFoundException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_PHONE_PASSWORD));
+      throw new DataNotFoundException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_USERNAME_PASSWORD));
     }
     User existingUser = optionalUser.get();
     //check password
     if (existingUser.getFacebookAccountId() == 0
         && existingUser.getGoogleAccountId() == 0) {
       if (!passwordEncoder.matches(password, existingUser.getPassword())) {
-        throw new BadCredentialsException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_PHONE_PASSWORD));
+        throw new BadCredentialsException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_USERNAME_PASSWORD));
       }
     }
     if (!optionalUser.get().isActive()) {
@@ -118,18 +118,18 @@ public class UserService implements IUserService {
             .orElseThrow(() -> new DataNotFoundException("User not found"));
 
     // Check if phone number provided is valid
-    String newPhoneNumber = updatedUserDTO.getPhoneNumber();
-    if (newPhoneNumber != null && !existingUser.getPhoneNumber().equals(newPhoneNumber) &&
-            userRepository.existsByPhoneNumber(newPhoneNumber)) {
-      throw new DataIntegrityViolationException("Phone number already exists");
+    String newUserName = updatedUserDTO.getPhoneNumber();
+    if (newUserName != null && !existingUser.getPhoneNumber().equals(newUserName) &&
+            userRepository.existsByUsername(newUserName)) {
+      throw new DataIntegrityViolationException("UserName already exists");
     }
 
     // Update user information based on the DTO
     if (updatedUserDTO.getFullName() != null) {
       existingUser.setFullName(updatedUserDTO.getFullName());
     }
-    if (newPhoneNumber != null) {
-      existingUser.setPhoneNumber(newPhoneNumber);
+    if (newUserName != null) {
+      existingUser.setUsername(newUserName);
     }
     // Continue updating other fields...
 
@@ -141,8 +141,8 @@ public class UserService implements IUserService {
     if (jwtTokenUtil.isTokenExpired(token)) {
       throw new ExpiredTokenException("Token is expired");
     }
-    String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
-    Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
+    String userName = jwtTokenUtil.extractUserName(token);
+    Optional<User> user = userRepository.findByUsername(userName);
 
     if (user.isPresent()) {
       return user.get();

@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +40,7 @@ import java.util.UUID;
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
 public class UserController {
+  private static final org.slf4j.Logger log = LoggerFactory.getLogger(UserController.class);
   private final IUserService userService;
   private final LocalizationUtils localizationUtils;
   private final ITokenService tokenService;
@@ -103,39 +105,51 @@ public class UserController {
 
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> login(
-      @Valid @RequestBody UserLoginDTO userLoginDTO,
-      HttpServletRequest request
+          @Valid @RequestBody UserLoginDTO userLoginDTO,
+          HttpServletRequest request
   ) {
-    // Kiểm tra thông tin đăng nhập và sinh token
     try {
+      log.debug("Attempting login for username: {}", userLoginDTO.getUserName());
+
       String token = userService.login(
-          userLoginDTO.getUserName(),
-          userLoginDTO.getPassword(),
-          userLoginDTO.getRoleId() == null ? 1 : userLoginDTO.getRoleId()
+              userLoginDTO.getUserName(),
+              userLoginDTO.getPassword(),
+              userLoginDTO.getRoleId() == null ? 1 : userLoginDTO.getRoleId()
       );
+
+      if (token == null) {
+        throw new RuntimeException("Token generation failed");
+      }
+
       String userAgent = request.getHeader("User-Agent");
       User userDetail = userService.getUserDetailsFromToken(token);
+
+      if (userDetail == null) {
+        throw new RuntimeException("User details not found");
+      }
+
       Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
 
-      // Trả về token trong response
       return ResponseEntity.ok(LoginResponse.builder()
-          .message(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_SUCCESSFULLY))
-          .token(jwtToken.getToken())
-          .tokenType(jwtToken.getTokenType())
-          .refreshToken(jwtToken.getRefreshToken())
-          .username(userDetail.getUsername())
-          .roles(userDetail.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
-          .id(userDetail.getId())
-          .build());
+              .message(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_SUCCESSFULLY))
+              .token(jwtToken.getToken())
+              .tokenType(jwtToken.getTokenType())
+              .refreshToken(jwtToken.getRefreshToken())
+              .username(userDetail.getUsername())
+              .roles(userDetail.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+              .id(userDetail.getId())
+              .build());
     } catch (Exception e) {
+      log.error("Login failed", e);
       return ResponseEntity.badRequest().body(
-          LoginResponse.builder()
-              .message(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_FAILED,
-                  e.getMessage()))
-              .build()
+              LoginResponse.builder()
+                      .message(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_FAILED, e.getMessage()))
+                      .build()
       );
     }
   }
+
+
 
   @PostMapping("/refreshToken")
   public ResponseEntity<LoginResponse> refreshToken(
