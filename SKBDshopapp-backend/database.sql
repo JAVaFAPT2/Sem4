@@ -1,5 +1,8 @@
 USE shopapp;
 
+SET SQL_SAFE_UPDATES = 0;
+
+    
 CREATE TABLE users(
     id INT PRIMARY KEY AUTO_INCREMENT,
     fullname VARCHAR(100) DEFAULT '',
@@ -137,4 +140,3 @@ WHERE total_money IS NULL
    OR shipping_date IS NULL
    OR active IS NULL;
 
-SET SQL_SAFE_UPDATES = 0;
