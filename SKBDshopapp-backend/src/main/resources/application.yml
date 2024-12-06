@@ -64,4 +64,8 @@ management:
         #include: "health"
         include: "health, info"
 
+kafka:
+  bootstrap:
+    servers=your-kafka-broker:9092:
+
 

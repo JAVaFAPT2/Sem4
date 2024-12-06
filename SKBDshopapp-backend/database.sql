@@ -48,7 +48,7 @@ CREATE TABLE social_accounts(
 
 CREATE TABLE categories(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    name varchar(100) NOT NULL DEFAULT '' COMMENT 'CATEGORY NAME',
+    name varchar(100) NOT NULL DEFAULT '' COMMENT 'CATEGORY NAME'
 );
 
 
