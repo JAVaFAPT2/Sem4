@@ -21,6 +21,7 @@ spring:
   messages:
     basename: MessageRT/messages
     encoding: UTF-8
+    default-locale: en
   security:
     oauth2:
       client:
@@ -32,13 +33,13 @@ spring:
               - email
               - public_profile
   kafka:
-    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094,localhost:9095
+    bootstrap-servers: localhost:9092
 api:
   prefix: /api
 jwt:
   expiration: 3306006
   expiration-refresh-token: 3306006
-  secretKey: 1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456
+  secretKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFNiIsInR5cCI6IkpXVCJ9eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZS
 
 logging:
   level:

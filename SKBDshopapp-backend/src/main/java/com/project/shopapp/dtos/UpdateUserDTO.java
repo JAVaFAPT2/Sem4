@@ -20,6 +20,10 @@ public class UpdateUserDTO {
   @JsonProperty("phone_number")
   private String phoneNumber;
 
+  @JsonProperty("username")
+  @NotBlank(message = "Username is required")
+  private String username;
+
   private String address;
 
   @JsonProperty("password")

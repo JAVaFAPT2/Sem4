@@ -54,7 +54,7 @@ public class TokenService implements ITokenService {
     existingToken.setRefreshExpirationDate(LocalDateTime.now().plusSeconds(expirationRefreshToken));
 
     // Save the updated token
-    return tokenRepository.save(existingToken);
+    return existingToken;
   }
 
   @Transactional

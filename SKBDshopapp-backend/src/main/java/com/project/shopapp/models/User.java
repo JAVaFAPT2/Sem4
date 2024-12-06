@@ -18,6 +18,7 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class User extends BaseEntity implements UserDetails, OAuth2User, Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,7 +70,7 @@ public class User extends BaseEntity implements UserDetails, OAuth2User, Seriali
 
   @Override
   public String getUsername() {
-    return phoneNumber;
+    return username;
   }
 
   @Override

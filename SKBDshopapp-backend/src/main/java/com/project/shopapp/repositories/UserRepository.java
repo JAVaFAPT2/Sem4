@@ -10,10 +10,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-  boolean existsByPhoneNumber(String phoneNumber);
   boolean existsByUsername(String username);
 
-  Optional<User> findByPhoneNumber(String phoneNumber);
   Optional<User> findByUsername(String username);
 
   //SELECT * FROM users WHERE phoneNumber=?

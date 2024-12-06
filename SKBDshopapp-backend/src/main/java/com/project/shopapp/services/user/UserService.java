@@ -81,21 +81,18 @@ public class UserService implements IUserService {
   }
   //!
   @Override
-  public String login(
-      String userName,
-      String password,
-      Long roleId
+  public String login(String userName, String password, Long roleId
   ) throws Exception {
     Optional<User> optionalUser = userRepository.findByUsername(userName);
     if (optionalUser.isEmpty()) {
-      throw new DataNotFoundException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_USERNAME_PASSWORD));
+      throw new DataNotFoundException(localizationUtils.getLocalizedMessage(MessageKeys.EMTIUSER));
     }
     User existingUser = optionalUser.get();
     //check password
     if (existingUser.getFacebookAccountId() == 0
         && existingUser.getGoogleAccountId() == 0) {
       if (!passwordEncoder.matches(password, existingUser.getPassword())) {
-        throw new BadCredentialsException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_USERNAME_PASSWORD));
+        throw new BadCredentialsException(localizationUtils.getLocalizedMessage(MessageKeys.USER_IS_LOCKED));
       }
     }
     if (!optionalUser.get().isActive()) {
@@ -118,8 +115,8 @@ public class UserService implements IUserService {
             .orElseThrow(() -> new DataNotFoundException("User not found"));
 
     // Check if phone number provided is valid
-    String newUserName = updatedUserDTO.getPhoneNumber();
-    if (newUserName != null && !existingUser.getPhoneNumber().equals(newUserName) &&
+    String newUserName = updatedUserDTO.getUsername();
+    if (newUserName != null && !existingUser.getUsername().equals(newUserName) &&
             userRepository.existsByUsername(newUserName)) {
       throw new DataIntegrityViolationException("UserName already exists");
     }
@@ -171,7 +168,6 @@ public class UserService implements IUserService {
     String encodedPassword = passwordEncoder.encode(newPassword);
     existingUser.setPassword(encodedPassword);
     userRepository.save(existingUser);
-    //reset password => clear token
     List<Token> tokens = tokenRepository.findByUser(existingUser);
     for (Token token : tokens) {
       tokenRepository.delete(token);

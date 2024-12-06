@@ -60,7 +60,7 @@ public class OrderResponse {
   private List<OrderDetail> orderDetails;
 
   public static OrderResponse fromOrder(Order order) {
-    OrderResponse orderResponse = OrderResponse
+      return OrderResponse
         .builder()
         .id(order.getId())
         .userId(order.getUser().getId())
@@ -78,6 +78,5 @@ public class OrderResponse {
         .paymentMethod(order.getPaymentMethod())
         .orderDetails(order.getOrderDetails())
         .build();
-    return orderResponse;
   }
 }

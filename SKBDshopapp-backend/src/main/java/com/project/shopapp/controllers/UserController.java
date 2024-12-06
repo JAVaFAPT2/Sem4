@@ -80,7 +80,7 @@ public class UserController {
     RegisterResponse registerResponse = new RegisterResponse();
 
     try {
-      User newUser = userService.createUser(userDTO);
+      userService.createUser(userDTO);
       registerResponse.setMessage("Registration successful");
       return ResponseEntity.ok(registerResponse);
     } catch (DataIntegrityViolationException e) {
@@ -140,7 +140,6 @@ public class UserController {
               .id(userDetail.getId())
               .build());
     } catch (Exception e) {
-      log.error("Login failed", e);
       return ResponseEntity.badRequest().body(
               LoginResponse.builder()
                       .message(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_FAILED, e.getMessage()))

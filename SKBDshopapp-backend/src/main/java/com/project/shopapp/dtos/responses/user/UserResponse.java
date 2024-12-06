@@ -17,6 +17,9 @@ public class UserResponse {
   @JsonProperty("fullname")
   private String fullName;
 
+  @JsonProperty("username")
+  private String username;
+
   @JsonProperty("phone_number")
   private String phoneNumber;
 
@@ -40,6 +43,7 @@ public class UserResponse {
 
   public static UserResponse fromUser(com.project.shopapp.models.User user) {
     return UserResponse.builder()
+            .username(user.getUsername())
         .id(user.getId())
         .fullName(user.getFullName())
         .phoneNumber(user.getPhoneNumber())
