@@ -9,7 +9,7 @@ export class RegisterDTO {
   fullname: string
   @IsString()
   @IsNotEmpty()
-  userName: string
+  username: string
 
   @IsString()
   @IsNotEmpty()
@@ -32,7 +32,7 @@ export class RegisterDTO {
 
   constructor(data: any) {
     this.fullname = data.fullname
-    this.userName = data.userName
+    this.username = data.username
     this.address = data.address
     this.password = data.password
     this.retype_password = data.retype_password

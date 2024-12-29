@@ -8,6 +8,7 @@ import { adminRoutes } from './admin-routes'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { provideRouter } from '@angular/router'
+import {FooterComponent} from "../footer/footer.component";
 
 @Component({
   selector: 'app-admin',
@@ -18,8 +19,10 @@ import { provideRouter } from '@angular/router'
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    FooterComponent,
     //FormsModule
+
   ]
 
 
@@ -38,8 +41,6 @@ export class AdminComponent implements OnInit {
 
   ngOnInit() {
     this.userResponse = this.userService.getUserResponseFromLocalStorage()
-    // Default router
-    // debugger
     if (this.router.url === '/admin') {
       this.router.navigate(['/admin/orders'])
     }

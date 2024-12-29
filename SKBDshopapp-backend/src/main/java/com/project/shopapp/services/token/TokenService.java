@@ -59,30 +59,13 @@ public class TokenService implements ITokenService {
 
   @Transactional
   @Override
-  public Token addToken(User user, String token, boolean isMobileDevice) {
+  public Token addToken(User user, String token) {
     if (user == null || token == null || token.isEmpty()) {
       throw new IllegalArgumentException("User and token must not be null or empty");
     }
 
-    List<Token> userTokens = tokenRepository.findByUser(user);
-    int tokenCount = userTokens.size();
 
-    if (tokenCount >= MAX_TOKENS) {
-      Token tokenToDelete;
-      boolean hasNonMobileToken = userTokens.stream().anyMatch(t -> !t.isMobile());
-
-      if (hasNonMobileToken) {
-        tokenToDelete = userTokens.stream()
-                .filter(t -> !t.isMobile())
-                .findFirst()
-                .orElse(userTokens.get(0)); // Fallback to the first token if none found
-      } else {
-        tokenToDelete = userTokens.get(0); // All tokens are mobile, delete the first one
-      }
-      tokenRepository.delete(tokenToDelete);
-    }
-
-    LocalDateTime expirationDateTime = LocalDateTime.now().plusSeconds(expiration);
+LocalDateTime expirationDateTime = LocalDateTime.now().plusSeconds(expiration);
     Token newToken = Token.builder()
             .user(user)
             .token(token)
@@ -90,7 +73,6 @@ public class TokenService implements ITokenService {
             .expired(false)
             .tokenType("Bearer")
             .expirationDate(expirationDateTime)
-            .isMobile(isMobileDevice)
             .refreshToken(UUID.randomUUID().toString())
             .refreshExpirationDate(LocalDateTime.now().plusSeconds(expirationRefreshToken))
             .build();

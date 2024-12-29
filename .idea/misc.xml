@@ -6,6 +6,7 @@
       <list>
         <option value="$PROJECT_DIR$/Project4/pom.xml" />
         <option value="$PROJECT_DIR$/BE-SKBD/pom.xml" />
+        <option value="$PROJECT_DIR$/SKBDshopapp-backend/pom.xml" />
       </list>
     </option>
   </component>

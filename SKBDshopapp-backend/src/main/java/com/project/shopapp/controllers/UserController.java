@@ -128,7 +128,7 @@ public class UserController {
         throw new RuntimeException("User details not found");
       }
 
-      Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
+      Token jwtToken = tokenService.addToken(userDetail, token);
 
       return ResponseEntity.ok(LoginResponse.builder()
               .message(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_SUCCESSFULLY))
@@ -177,11 +177,6 @@ public class UserController {
     }
   }
 
-  private boolean isMobileDevice(String userAgent) {
-    // Kiểm tra User-Agent header để xác định thiết bị di động
-    // Ví dụ đơn giản:
-    return userAgent.toLowerCase().contains("mobile");
-  }
 
   @PostMapping("/details")
   @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")

@@ -2,6 +2,5 @@
 <project version="4">
   <component name="WiseGptState">
     <option name="technology" value="NotFound" />
-    <option name="states" value="[&quot;{\&quot;type\&quot;:\&quot;data_analyzing\&quot;,\&quot;isComplete\&quot;:true}&quot;]" />
   </component>
 </project>

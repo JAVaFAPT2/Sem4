@@ -6,15 +6,15 @@
       <div class="login-form mx-auto">
         <h2 class="login-header">Đăng nhập</h2>
         <div class="form-group">
-          <label for="userName">UserName</label>
+          <label for="username">UserName</label>
           <input
             type="text"
             class="form-control"
-            [(ngModel)]="userName"
+            [(ngModel)]="username"
             (input)="onUserNameChange()"
-            name="UserName"
+            name="username"
             (focus)="loginForm.form.markAsTouched()"
-            id="userName">
+            id="username">
         </div>
 
         <div class="mt-5"></div>

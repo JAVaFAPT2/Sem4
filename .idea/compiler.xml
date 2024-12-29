@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Project4" />
         <module name="BE-SKBD" />
+        <module name="shopapp" />
       </profile>
     </annotationProcessing>
   </component>
@@ -16,6 +17,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="BE-SKBD" options="-parameters" />
       <module name="Project4" options="-parameters" />
+      <module name="shopapp" options="-parameters" />
     </option>
   </component>
 </project>

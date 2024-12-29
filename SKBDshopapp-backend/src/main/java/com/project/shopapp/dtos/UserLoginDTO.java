@@ -16,7 +16,7 @@ public class UserLoginDTO {
   @JsonProperty("username")
   @NotBlank(message = "userName is required")
   private String userName;
-
+  @JsonProperty("password")
   @NotBlank(message = "Password cannot be blank")
   private String password;
 

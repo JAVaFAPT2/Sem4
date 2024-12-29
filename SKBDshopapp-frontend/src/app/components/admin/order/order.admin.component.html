@@ -1,17 +1,16 @@
 <div class="container-fluid">
-  <h1>Orders Admin Page</h1>
-  <!--Đoạn này có 1 ô searchbox bên trái, 1 combobox bên phải  -->
-  <div class="row mb-3">
-    <div class="col-md-8">
+
+  <div class="row mb-3 px-2">
+    <div class="col-md-4"><h3>Orders Admin Page</h3></div>
+    <div class="col-md-6 ">
       <input
         [(ngModel)]="keyword"
         class="form-control search-input" placeholder="Tìm đơn hàng"
         type="text"
       >
+
     </div>
-    <div class="col-md-4">
-      <button (click)="searchOrders()" class="btn btn-primary">Tìm kiếm</button>
-    </div>
+    <div class="col-md-2"><button (click)="searchOrders()" class="btn btn-primary">Tìm kiếm</button></div>
   </div>
   <table class="table">
     <thead>

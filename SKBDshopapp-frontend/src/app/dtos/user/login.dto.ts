@@ -6,7 +6,9 @@ import {
 } from 'class-validator'
 
 export class LoginDTO {
-  user_name: string
+    @IsString()
+    @IsNotEmpty()
+    username: string
 
   @IsString()
   @IsNotEmpty()
@@ -15,7 +17,7 @@ export class LoginDTO {
   role_id: number
 
   constructor(data: any) {
-    this.user_name = data.user_name
+    this.username = data.username
     this.password = data.password
     this.role_id = data.role_id
   }

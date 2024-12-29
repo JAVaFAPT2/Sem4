@@ -26,6 +26,7 @@ export class RegisterComponent {
   userName: string
   password: string
   retypePassword: string
+  phone_number: string
   fullName: string
   address: string
   isAccepted: boolean
@@ -34,26 +35,27 @@ export class RegisterComponent {
 
   constructor(private router: Router, private userService: UserService) {
     // debugger
-    this.userName = ''
-    this.password = ''
-    this.retypePassword = ''
-    this.fullName = ''
-    this.address = ''
-    this.isAccepted = true
-    this.dateOfBirth = new Date()
-    this.dateOfBirth.setFullYear(this.dateOfBirth.getFullYear() - 18)
+    this.userName = '';
+    this.password = '';
+    this.retypePassword = '';
+    this.phone_number = '';
+    this.fullName = '';
+    this.address = '';
+    this.isAccepted = true;
+    this.dateOfBirth = new Date();
+    this.dateOfBirth.setFullYear(this.dateOfBirth.getFullYear() - 18);
     //inject
 
   }
 
   onUserNameChange() {
-    console.log(`Phone typed: ${this.userName}`)
-    //how to validate ? phone must be at least 6 characters
+    console.log(`name typed: ${this.userName}`)
   }
 
   register() {
-    const message = `phone: ${this.userName}` +
+    const message = `username: ${this.userName}` +
       `password: ${this.password}` +
+      `phone_number: ${this.phone_number}` +
       `retypePassword: ${this.retypePassword}` +
       `address: ${this.address}` +
       `fullName: ${this.fullName}` +
@@ -62,9 +64,21 @@ export class RegisterComponent {
     //alert(message);
     // debugger
 
-    const registerDTO: RegisterDTO = {
+    const registerDTO: {
+      password: string;
+      address: string;
+      google_account_id: number;
+      role_id: number;
+      date_of_birth: Date;
+      phone_number: string;
+      facebook_account_id: number;
+      fullname: string;
+      username: string;
+      retype_password: string
+    } = {
       'fullname': this.fullName,
-      'userName': this.userName,
+      'username': this.userName,
+      'phone_number': this.phone_number,
       'address': this.address,
       'password': this.password,
       'retype_password': this.retypePassword,
@@ -77,13 +91,13 @@ export class RegisterComponent {
       next: (response: any) => {
         // debugger
         const confirmation = window
-          .confirm('Đăng ký thành công, mời bạn đăng nhập. Bấm "OK" để chuyển đến trang đăng nhập.')
+          .confirm('OK.')
         if (confirmation) {
           this.router.navigate(['/login'])
         }
       },
       complete: () => {
-        // debugger
+
       },
       error: (error: any) => {
         // debugger

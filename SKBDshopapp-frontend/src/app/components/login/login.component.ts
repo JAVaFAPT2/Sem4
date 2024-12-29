@@ -28,10 +28,9 @@ import { FormsModule } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
   @ViewChild('loginForm') loginForm!: NgForm;
-  userName: string = '';
+  username: string = '';
   password: string = '';
   showPassword: boolean = false;
-
   roles: Role[] = [];
   rememberMe: boolean = true;
   selectedRole?: Role;
@@ -64,9 +63,8 @@ export class LoginComponent implements OnInit {
   }
 
   onUserNameChange() {
-    // Validate that phone number is at least 6 characters
-    if (this.userName.length < 6) {
-      console.warn('Phone number must be at least 6 characters');
+    if (this.username.length < 6) {
+      console.warn('Username must be at least 6 characters');
     }
   }
 
@@ -76,7 +74,7 @@ export class LoginComponent implements OnInit {
 
   login() {
     const loginDTO: LoginDTO = {
-      user_name: this.userName,
+      username: this.username,
       password: this.password,
       role_id: this.selectedRole?.id ?? 1
     };
@@ -104,10 +102,16 @@ export class LoginComponent implements OnInit {
         };
         this.userService.saveUserResponseToLocalStorage(this.userResponse);
 
-        if (this.userResponse?.role.name === 'admin') {
+        // Debug log the user response
+        console.log('User response:', this.userResponse);
+
+        if (this.userResponse?.role.name.toUpperCase() === 'ADMIN') { // Adjust based on actual response
+          console.log('Navigating to admin page...');
           this.router.navigate(['/admin']);
-        } else if (this.userResponse?.role.name === 'user') {
+        } else if (this.userResponse?.role.name.toUpperCase() === 'USER') {
           this.router.navigate(['/']);
+        } else {
+          console.warn('Unrecognized role. Not navigating.');
         }
       },
       error: (error: any) => {

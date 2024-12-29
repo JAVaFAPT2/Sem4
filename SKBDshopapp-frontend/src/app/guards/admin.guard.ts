@@ -24,13 +24,11 @@ export class AdminGuard {
     const isTokenExpired = this.tokenService.isTokenExpired()
     const isUserIdValid = this.tokenService.getUserId() > 0
     this.userResponse = this.userService.getUserResponseFromLocalStorage()
-    const isAdmin = this.userResponse?.role.name == 'admin'
+    const isAdmin = this.userResponse?.role.name.toUpperCase() == 'ADMIN'
     // debugger
     if (!isTokenExpired && isUserIdValid && isAdmin) {
       return true
     } else {
-      // Nếu không authenticated, bạn có thể redirect hoặc trả về một UrlTree khác.
-      // Ví dụ trả về trang login:
       this.router.navigate(['/login'])
       return false
     }
